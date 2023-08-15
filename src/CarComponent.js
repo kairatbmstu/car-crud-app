@@ -1,8 +1,15 @@
 import React, { useState } from 'react';
 
+import CarCreateComponent from './CarCreateComponent';
+import CarUpdateComponent from './CarUpdateComponent';
+
+
+
 const CarComponent = () => {
   const [cars, setCars] = useState([]);
   const [newCar, setNewCar] = useState({ id: '', name: '', year: '' });
+
+  const [renderCreateCarForm , setRenderCreateCarForm] = useState(false);;
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -24,58 +31,47 @@ const CarComponent = () => {
     setCars(updatedCars);
   };
 
+  const handleRenderCreateCarForm = () => {
+    console.log('renderCreateCarForm : ', renderCreateCarForm)
+    if (renderCreateCarForm){
+      setRenderCreateCarForm(false);
+    } else {
+      setRenderCreateCarForm(true);
+    }
+  }
+  
   return (
-    <div>
-      <h2>Car CRUD Application</h2>
       <div>
-        <input
-          type="text"
-          name="id"
-          placeholder="ID"
-          value={newCar.id}
-          onChange={handleInputChange}
-        />
-        <input
-          type="text"
-          name="name"
-          placeholder="Name"
-          value={newCar.name}
-          onChange={handleInputChange}
-        />
-        <input
-          type="text"
-          name="year"
-          placeholder="Year"
-          value={newCar.year}
-          onChange={handleInputChange}
-        />
-        <button onClick={handleAddCar}>Add Car</button>
-      </div>
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Year</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {cars.map((car) => (
-            <tr key={car.id}>
-              <td>{car.id}</td>
-              <td>{car.name}</td>
-              <td>{car.year}</td>
-              <td>
-                <button onClick={() => handleUpdateCar(car.id, { ...car, name: 'UpdatedName' })}>Update</button>
-                <button onClick={() => handleDeleteCar(car.id)}>Delete</button>
-              </td>
+        <h2>Car CRUD Application</h2>
+
+        {renderCreateCarForm && <CarUpdateComponent car={newCar}/>} 
+
+        <button onClick={handleRenderCreateCarForm}>Create Car</button>
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Year</th>
+              <th>Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
+          </thead>
+          <tbody>
+            {cars.map((car) => (
+              <tr key={car.id}>
+                <td>{car.id}</td>
+                <td>{car.name}</td>
+                <td>{car.year}</td>
+                <td>
+                  <button onClick={() => handleUpdateCar(car.id, { ...car, name: 'UpdatedName' })}>Update</button>
+                  <button onClick={() => handleDeleteCar(car.id)}>Delete</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    );
 };
 
 export default CarComponent;
