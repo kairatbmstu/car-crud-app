@@ -24,7 +24,7 @@ const CarCreateComponent = ({ cars, newCar, handleAddCar, handleInputChange }) =
       value={newCar.year}
       onChange={handleInputChange}
     />
-    <button onClick={handleAddCar}>Add Car</button>
+    <button onClick={handleAddCar}>Save</button>
   </div>);
 }
 

@@ -24,7 +24,7 @@ const CarUpdateComponent = ({ car, handleUpdateCar, handleInputChange }) => {
       value={car.year}
       onChange={handleInputChange}
     />
-    <button onClick={handleUpdateCar}>Add Car</button>
+    <button onClick={() => handleUpdateCar(car.id, car)}>Save</button>
   </div>);
 }
 

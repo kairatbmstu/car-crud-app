@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 
 import CarCreateComponent from './CarCreateComponent';
 import CarUpdateComponent from './CarUpdateComponent';
+import CarItem from './CarItem';
 
 
 
@@ -9,13 +10,20 @@ const CarComponent = () => {
   const [cars, setCars] = useState([]);
   const [newCar, setNewCar] = useState({ id: '', name: '', year: '' });
   const [selectedCar, setSelectedCar] = useState(null);
+  const [isSelected, setIsSelected] = useState('');
 
   const [renderCreateCarForm, setRenderCreateCarForm] = useState(false);;
   const [renderUpdateCarForm, setRenderUpdateCarForm] = useState(false);;
 
+  const onSelect = (car) => {
+    console.log('onSelect car : ' , car)
+    setSelectedCar(car)
+  }
+
   const handleAddCar = () => {
     setCars([...cars, newCar]);
     setNewCar({ id: '', name: '', year: '' });
+    handleRenderCreateCarForm();
   };
 
   const handleInputChange = (event) => {
@@ -24,10 +32,18 @@ const CarComponent = () => {
     setNewCar((prevCar) => ({ ...prevCar, [name]: value }));
   };
 
+  const handleInputChangeForSelectedCar = (event) => {
+    console.log(event.target)
+    const { name, value } = event.target;
+    setSelectedCar((prevCar) => ({ ...prevCar, [name]: value }));
+  };
 
   const handleUpdateCar = (id, updatedCar) => {
+    console.log("id : ", id);
+    console.log("updatedCar : ", updatedCar);
     const updatedCars = cars.map((car) => (car.id === id ? updatedCar : car));
     setCars(updatedCars);
+    handleRenderUpdateCarForm();
   };
 
   const handleDeleteCar = (id) => {
@@ -38,18 +54,18 @@ const CarComponent = () => {
   const handleRenderCreateCarForm = () => {
     console.log('renderCreateCarForm : ', renderCreateCarForm)
     if (renderCreateCarForm) {
-      setRenderUpdateCarForm(false);
+      setRenderCreateCarForm(false);
     } else {
-      setRenderUpdateCarForm(true);
+      setRenderCreateCarForm(true);
     }
   }
 
   const handleRenderUpdateCarForm = () => {
     console.log('renderUpdateCarForm : ', renderUpdateCarForm)
     if (renderUpdateCarForm) {
-      setRenderCreateCarForm(false);
+      setRenderUpdateCarForm(false);
     } else {
-      setRenderCreateCarForm(true);
+      setRenderUpdateCarForm(true);
     }
   }
 
@@ -64,12 +80,12 @@ const CarComponent = () => {
           handleAddCar={handleAddCar}
           handleInputChange={handleInputChange} />}
 
-      {renderUpdateCarForm &&
+      {selectedCar!=null && renderUpdateCarForm &&
         <CarUpdateComponent
           cars={cars}
-          newCar={newCar}
+          car={selectedCar}
           handleUpdateCar={handleUpdateCar}
-          handleInputChange={handleInputChange} />}
+          handleInputChange={handleInputChangeForSelectedCar} />}
 
       <button onClick={handleRenderCreateCarForm}>Create Car</button>
       <button onClick={handleRenderUpdateCarForm}>Update Car</button>
@@ -84,15 +100,8 @@ const CarComponent = () => {
         </thead>
         <tbody>
           {cars.map((car) => (
-            <tr key={car.id}>
-              <td onClick={handleCarClick}>{car.id}</td>
-              <td>{car.name}</td>
-              <td>{car.year}</td>
-              <td>
-                <button onClick={() => handleUpdateCar(car.id, { ...car, name: 'UpdatedName' })}>Update</button>
-                <button onClick={() => handleDeleteCar(car.id)}>Delete</button>
-              </td>
-            </tr>
+            <CarItem car={car} onSelect={onSelect} isSelected={isSelected}
+            handleUpdateCar={handleUpdateCar} handleDeleteCar={handleDeleteCar}/>
           ))}
         </tbody>
       </table>
