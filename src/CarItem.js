@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 
 
-const CarItem = ({ car, onSelect, isSelected, handleUpdateCar, handleDeleteCar }) => {
+
+const CarItem = ({ car, onSelect, isSelected, navigateToUpdate, handleDeleteCar }) => {
     const handleCarClick = () => {
         onSelect(car);
     };
@@ -12,7 +13,7 @@ const CarItem = ({ car, onSelect, isSelected, handleUpdateCar, handleDeleteCar }
             <td>{car.name}</td>
             <td>{car.year}</td>
             <td>
-                <button onClick={() => handleUpdateCar(car.id, { ...car, name: 'UpdatedName' })}>Update</button>
+                <button onClick={() => navigateToUpdate(car.id)}>Update</button>
                 <button onClick={() => handleDeleteCar(car.id)}>Delete</button>
             </td>
         </tr>

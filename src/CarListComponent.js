@@ -1,37 +1,38 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import CarCreateComponent from './CarCreateComponent';
 import CarUpdateComponent from './CarUpdateComponent';
 import CarItem from './CarItem';
+import { useNavigate } from "react-router-dom";
+import axios from 'axios';
 
 
-
-const CarComponent = () => {
+const CarListComponent = () => {
+  
   const [cars, setCars] = useState([]);
-  const [newCar, setNewCar] = useState({ id: '', name: '', year: '' });
+
+  
   const [selectedCar, setSelectedCar] = useState(null);
   const [isSelected, setIsSelected] = useState('');
 
   const [renderCreateCarForm, setRenderCreateCarForm] = useState(false);;
   const [renderUpdateCarForm, setRenderUpdateCarForm] = useState(false);;
 
-  const onSelect = (car) => {
-    console.log('onSelect car : ' , car)
-    setSelectedCar(car)
+  const navigate = useNavigate();
+
+  const navigateToCreate = () => {
+    navigate("/create");
   }
 
-  const handleAddCar = () => {
-    setCars([...cars, newCar]);
-    setNewCar({ id: '', name: '', year: '' });
-    handleRenderCreateCarForm();
-  };
+  const navigateToUpdate = (id) => {
+    navigate("/update/"+id);
+  }
 
-  const handleInputChange = (event) => {
-    console.log(event.target)
-    const { name, value } = event.target;
-    setNewCar((prevCar) => ({ ...prevCar, [name]: value }));
-  };
-
+  const onSelect = (car) => {
+    console.log('onSelect car : ', car)
+    setSelectedCar(car)
+  }
+ 
   const handleInputChangeForSelectedCar = (event) => {
     console.log(event.target)
     const { name, value } = event.target;
@@ -69,26 +70,26 @@ const CarComponent = () => {
     }
   }
 
+  useEffect(() => {
+    // Define the API endpoint URL
+    const apiUrl = 'http://localhost:8080/cars'; // Replace with your API URL
+    // Fetch data from the API using Axios
+    axios.get(apiUrl)
+      .then(response => {
+        // Update the state with the fetched data
+        setCars(response.data);
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      });
+  }, []);
+
+  console.log("Redner CarList Component")
   return (
     <div>
       <h2>Car CRUD Application</h2>
 
-      {renderCreateCarForm &&
-        <CarCreateComponent
-          cars={cars}
-          newCar={newCar}
-          handleAddCar={handleAddCar}
-          handleInputChange={handleInputChange} />}
-
-      {selectedCar!=null && renderUpdateCarForm &&
-        <CarUpdateComponent
-          cars={cars}
-          car={selectedCar}
-          handleUpdateCar={handleUpdateCar}
-          handleInputChange={handleInputChangeForSelectedCar} />}
-
-      <button onClick={handleRenderCreateCarForm}>Create Car</button>
-      <button onClick={handleRenderUpdateCarForm}>Update Car</button>
+      <button onClick={navigateToCreate}>Create Car</button>
       <table>
         <thead>
           <tr>
@@ -100,8 +101,8 @@ const CarComponent = () => {
         </thead>
         <tbody>
           {cars.map((car) => (
-            <CarItem car={car} onSelect={onSelect} isSelected={isSelected}
-            handleUpdateCar={handleUpdateCar} handleDeleteCar={handleDeleteCar}/>
+            <CarItem car={car} onSelect={onSelect} isSelected={false}
+            handleDeleteCar={handleDeleteCar} navigateToUpdate={navigateToUpdate} />
           ))}
         </tbody>
       </table>
@@ -109,4 +110,4 @@ const CarComponent = () => {
   );
 };
 
-export default CarComponent;
+export default CarListComponent;

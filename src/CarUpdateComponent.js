@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 
 
+
 const CarUpdateComponent = ({ car, handleUpdateCar, handleInputChange }) => {
+
+
   return (<div>
     <input
       type="text"
