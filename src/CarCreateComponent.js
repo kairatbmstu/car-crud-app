@@ -2,20 +2,34 @@ import React, { useState } from 'react';
 
 import axios from 'axios';
 
+import { useNavigate } from "react-router-dom";
+
 const CarCreateComponent = () => {
+  const navigate = useNavigate();
 
   const [newCar, setNewCar] = useState({ name: '', year: '' });
 
-  const handleAddCar = () => {
-    const apiUrl = 'http://localhost:8080/cars'; 
-    axios.get(apiUrl)
-      .then(response => {
-        console.log(response.data);
-      })
-      .catch(error => {
-        console.error('Error fetching data:', error);
-      });
+  const navigateToList = () => {
+    navigate("/");
+  }
 
+  const handleAddCar = () => {
+    const apiUrl = 'http://localhost:8080/cars';
+
+    let request = {
+      name : newCar.name,
+      year : parseInt(newCar.year)
+    }
+    axios.post(apiUrl, request)
+      .then((response) => {
+        // Handle the response from the server
+        console.log('Object saved successfully:', response.data);
+        navigateToList();
+      })
+      .catch((error) => {
+        // Handle any errors that occurred during the POST request
+        console.error('Error saving object:', error);
+      });
   };
 
   const handleInputChange = (event) => {
@@ -26,21 +40,27 @@ const CarCreateComponent = () => {
 
 
   return (<div>
-    <input
-      type="text"
-      name="name"
-      placeholder="Name"
-      value={newCar.name}
-      onChange={handleInputChange}
-    />
-    <input
-      type="text"
-      name="year"
-      placeholder="Year"
-      value={newCar.year}
-      onChange={handleInputChange}
-    />
-    <button onClick={handleAddCar}>Save</button>
+    <div>
+      <input
+        type="text"
+        name="name"
+        placeholder="Name"
+        value={newCar.name}
+        onChange={handleInputChange}
+      />
+    </div>
+    <div>
+      <input
+        type="number"
+        name="year"
+        placeholder="Year"
+        value={newCar.year}
+        onChange={handleInputChange}
+      />
+    </div>
+    <div>
+      <button onClick={handleAddCar}>Save</button>
+    </div>
   </div>);
 }
 
