@@ -19,7 +19,7 @@ function App() {
             </Route>
             <Route path="/create" element={<CarCreateComponent />}>
             </Route>
-            <Route path="/update" element={<CarUpdateComponent />}>
+            <Route path="/update/:id" element={<CarUpdateComponent />}>
             </Route>
           </Routes>
         </div>
